@@ -1,0 +1,57 @@
+services:
+  postgres:
+    image: postgres:13.3-alpine
+    container_name: postgres
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_DB=fiap_auth_service_db
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_USER=postgres
+    volumes:
+      - ./src/main/resources/sql_scripts/:/docker-entrypoint-initdb.d
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - fiap-db-network
+    healthcheck:
+      test: [ "CMD", "pg_isready", "-U", "postgres" ]
+      interval: 10s
+      retries: 5
+      start_period: 30s
+
+  fiap-auth-service-app:
+    container_name: fiap-auth-service-app
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8081:8081"  # Certifique-se de que a porta externa e interna estão corretas
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/fiap_auth_service_db
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=postgres
+      - SPRING_MAIL_HOST=maildev
+      - SPRING_MAIL_PORT=1025
+    depends_on:
+      - postgres
+      - maildev
+    restart: always
+    networks:
+      - fiap-db-network
+
+  maildev:
+    image: maildev/maildev
+    container_name: maildev
+    ports:
+      - "1080:1080"
+      - "1025:1025"
+    networks:
+      - fiap-db-network
+
+networks:
+  fiap-db-network:
+    external: true  # Configurado como rede externa
+    name: fiap-db-network
+
+volumes:
+  postgres_data:

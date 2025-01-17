@@ -1,0 +1,44 @@
+spring:
+  application:
+    name: fiap-auth-service-app
+
+  mail:
+    host: ${SPRING_MAIL_HOST:maildev}
+    port: ${SPRING_MAIL_PORT:1025}
+    protocol: smtp
+    test-connection: true
+    properties:
+      mail:
+        smtp:
+          auth: false  # MailDev não requer autenticação
+          starttls:
+            enable: false  # TLS não é necessário para MailDev
+
+  profiles:
+    active: dev
+
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://postgres:5432/fiap_auth_service_db}
+#    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/fiap_auth_service_db}
+    username: ${SPRING_DATASOURCE_USERNAME:postgres}
+    password: ${SPRING_DATASOURCE_PASSWORD:postgres}
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update  # Altere para 'update' se desejar que o Hibernate atualize o esquema automaticamente
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true  # Opcional: formata o SQL no log
+        use_sql_comments: true  # Opcional: adiciona comentários sobre as consultas
+    open-in-view: false  # Desative caso queira evitar problemas de Lazy Initialization
+server:
+  port: 8081
+
+#logging:
+#  level:
+#    org.springframework: DEBUG
+#    org.hibernate: DEBUG
+#    org.springframework.mail: DEBUG
+

@@ -1,0 +1,26 @@
+server:
+  port: 8081
+
+spring:
+  application:
+    name: fiap-auth-service-app
+
+  cloud:
+    config:
+      enabled: false
+
+  profiles:
+    active: dev
+
+  datasource:
+    url: jdbc:postgresql://postgres:5432/fiap-auth-service-app
+    username: postgres
+    password: postgres
+
+  jpa:
+    hibernate:
+      ddl-auto: none
+    show-sql: true        # Aqui deve ser um valor booleano (true ou false)
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
