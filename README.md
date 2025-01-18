@@ -22,9 +22,9 @@ O `fiap-auth-service` foi desenvolvido como um microserviço que fornece as func
 
 O `fiap-auth-service` é parte de um ecossistema maior de microserviços que inclui os seguintes componentes:
 
-1. **fiap-video-processor**: Responsável por processar vídeos, seja para edição, transcodificação ou análise.
-2. **fiap-video-management**: Gerencia o armazenamento e organização de vídeos, garantindo que os dados estejam acessíveis e bem indexados.
-3. **fiap-notification-service**: Envia notificações por e-mail e outros canais para os usuários, como parte do fluxo de comunicação da plataforma.
+1. **fiap-video-processor**: Processar vídeos enviados para o sistema. Extrair 10 imagens de um vídeo usando FFmpeg. Compactar as imagens em um arquivo .zip e fazer upload para o AWS S3. Notificar outros serviços sobre o status do processamento.
+2. **fiap-video-management**: Listar vídeos associados a um usuário. Exibir status e metadados de vídeos. Centralizar dados para consultas por outras APIs ou interfaces.
+3. **fiap-notification-service**: Consumir eventos de sucesso/falha de processamento (via SQS). Enviar notificações (e.g., e-mail via MailDev). Registrar logs e implementar retentativas para envios falhados.
 
 O `fiap-auth-service` fornece uma **Basic Authentication** utilizando o **Spring Security** para autenticação. Ao fornecer as credenciais de login (usuário e senha), o serviço valida as credenciais e garante que os outros microserviços possam acessar os recursos do usuário de maneira segura.
 
