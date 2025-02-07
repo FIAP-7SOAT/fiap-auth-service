@@ -1,10 +1,12 @@
+---
+
 # Arquitetura do fiap-auth-service
 
-Este documento fornece uma visão geral da arquitetura da aplicação `fiap-auth-service`, destacando o modelo de **arquitetura em camadas** adotado e o papel essencial dessa aplicação como um **microserviço de autenticação** para outros microserviços no ecossistema.
+Este documento fornece uma visão geral da arquitetura da aplicação `fiap-auth-service`, destacando o modelo de **arquitetura em camadas** adotado e o papel essencial dessa aplicação como um **microserviço de autenticação** para o microserviço `fiap-video-processor`.
 
 ## Visão Geral
 
-O `fiap-auth-service` é um microserviço desenvolvido para fornecer funcionalidades de **autenticação** e **gerenciamento de usuários**. Ele atua como um **ponto centralizado de autenticação** para outros microserviços no sistema, como o `fiap-video-processor`, `fiap-video-management` e `fiap-notification-service`.
+O `fiap-auth-service` é um microserviço desenvolvido para fornecer funcionalidades de **autenticação** e **gerenciamento de usuários**. Ele atua como um **ponto centralizado de autenticação** para o microserviço `fiap-video-processor`.
 
 A aplicação segue a arquitetura **em camadas**, o que facilita a separação de responsabilidades e promove a manutenção e escalabilidade do sistema. As camadas principais da aplicação são:
 
@@ -16,17 +18,7 @@ A arquitetura em camadas é um padrão amplamente utilizado para garantir que a 
 
 ## Propósito da Aplicação
 
-O `fiap-auth-service` foi desenvolvido como um microserviço que fornece as funcionalidades de **autenticação** e **gestão de usuários**. Ele será consumido por outros microserviços no sistema, garantindo que cada um desses serviços tenha um meio seguro de autenticar usuários e garantir a integridade das informações.
-
-### Microserviços Consumidores
-
-O `fiap-auth-service` é parte de um ecossistema maior de microserviços que inclui os seguintes componentes:
-
-1. **fiap-video-processor**: Processar vídeos enviados para o sistema. Extrair 10 imagens de um vídeo usando FFmpeg. Compactar as imagens em um arquivo .zip e fazer upload para o AWS S3. Notificar outros serviços sobre o status do processamento.
-2. **fiap-video-management**: Listar vídeos associados a um usuário. Exibir status e metadados de vídeos. Centralizar dados para consultas por outras APIs ou interfaces.
-3. **fiap-notification-service**: Consumir eventos de sucesso/falha de processamento (via SQS). Enviar notificações (e.g., e-mail via MailDev). Registrar logs e implementar retentativas para envios falhados.
-
-O `fiap-auth-service` fornece uma **Basic Authentication** utilizando o **Spring Security** para autenticação. Ao fornecer as credenciais de login (usuário e senha), o serviço valida as credenciais e garante que os outros microserviços possam acessar os recursos do usuário de maneira segura.
+O `fiap-auth-service` foi desenvolvido como um microserviço que fornece as funcionalidades de **autenticação** e **gestão de usuários**. Ele será consumido pelo microserviço `fiap-video-processor`, garantindo que esse serviço tenha um meio seguro de autenticar usuários e garantir a integridade das informações.
 
 ## Arquitetura em Camadas
 
@@ -40,6 +32,7 @@ A aplicação segue o padrão de **arquitetura em camadas**, o que significa que
 #### Endpoints do `UserController`
 O `UserController` fornece os seguintes endpoints para gerenciar usuários:
 
+- **POST /users/login**: Endpoint de login onde o usuário envia suas credenciais (usuário e senha) utilizando **Basic Authentication**. Se as credenciais forem válidas, o serviço retorna um **token JWT** que será utilizado pelo microserviço `fiap-video-processor` para autenticação em suas requisições subsequentes.
 - **POST /users**: Criação de um novo usuário. Após a criação, um e-mail de notificação é enviado ao usuário utilizando o **DevMail**, contendo os dados de login.
 - **GET /users/{id}**: Recupera os dados de um usuário específico pelo seu ID.
 - **GET /users**: Recupera todos os usuários cadastrados.
@@ -51,6 +44,7 @@ O `UserController` fornece os seguintes endpoints para gerenciar usuários:
 - Contém a lógica de negócios, como a autenticação dos usuários e a validação de credenciais.
 - Interage com a camada de persistência para recuperar ou salvar dados dos usuários.
 - Utiliza o serviço **EmailNotificationService** para enviar e-mails quando um novo usuário é criado.
+- Gera e valida o **token JWT** para autenticação.
 
 ### 3. Camada de Persistência (Repository)
 - Interage diretamente com o banco de dados PostgreSQL.
@@ -65,6 +59,7 @@ A aplicação `fiap-auth-service` é construída utilizando as seguintes tecnolo
 - **Java 17** e **Kotlin**: Linguagens utilizadas para implementar a lógica de negócios.
 - **Spring Boot**: Framework utilizado para a criação e execução da aplicação.
 - **Spring Security**: Para implementar a autenticação com **Basic Authentication**.
+- **JWT (JSON Web Token)**: Para gerar e validar tokens JWT usados para autenticação no microserviço `fiap-video-processor`.
 - **PostgreSQL**: Banco de dados relacional utilizado para armazenar as informações dos usuários.
 - **Docker**: Para criação e gerenciamento de containers.
 - **Kubernetes**: Para orquestração e escalabilidade da aplicação em produção.
@@ -72,13 +67,12 @@ A aplicação `fiap-auth-service` é construída utilizando as seguintes tecnolo
 
 ## Fluxo de Autenticação
 
-O fluxo de autenticação no `fiap-auth-service` é simples e eficaz, sendo baseado no **Basic Authentication** fornecido pelo **Spring Security**:
+O fluxo de autenticação no `fiap-auth-service` é simples e eficaz, sendo baseado no **Basic Authentication** fornecido pelo **Spring Security** e gerando um **token JWT**:
 
 1. O usuário envia suas credenciais (usuário e senha) para o endpoint de login, utilizando **Basic Authentication**.
-2. A aplicação valida as credenciais utilizando **Spring Security**. Se forem corretas, o usuário é autenticado.
-3. Com a autenticação realizada, o usuário pode acessar recursos protegidos em outros microserviços que consomem esse serviço de autenticação.
-
-Os outros microserviços (como `fiap-video-processor`, `fiap-video-management` e `fiap-notification-service`) irão utilizar a **autenticação básica** fornecida por este serviço para validar se o usuário tem permissão para acessar suas respectivas funcionalidades.
+2. A aplicação valida as credenciais utilizando **Spring Security**. Se forem corretas, um **token JWT** é gerado.
+3. O **token JWT** é retornado para o usuário, que deverá usá-lo para autenticação em suas requisições subsequentes.
+4. O microserviço `fiap-video-processor` utiliza esse **token JWT** para autenticar as requisições realizadas em seus endpoints.
 
 ## Links para Outros README
 
@@ -97,4 +91,6 @@ Para executar a aplicação, siga os passos nos documentos de **Docker** e **Kub
 
 A arquitetura em camadas adotada para o `fiap-auth-service` promove a organização e a modularidade do código, facilitando a manutenção e a escalabilidade. Além disso, como um microserviço, o `fiap-auth-service` desempenha um papel crucial no ecossistema de microserviços, fornecendo uma solução centralizada e segura para a autenticação de usuários.
 
-Essa abordagem modular permite que a aplicação seja facilmente integrada com outros serviços, como o `fiap-video-processor`, `fiap-video-management` e `fiap-notification-service`, garantindo uma solução eficiente para a gestão de usuários em toda a plataforma.
+Essa abordagem modular permite que a aplicação seja facilmente integrada com o microserviço `fiap-video-processor`, garantindo uma solução eficiente para a gestão de usuários na plataforma e a autenticação segura por meio de **tokens JWT**.
+
+--- 
