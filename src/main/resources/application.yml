@@ -19,7 +19,7 @@ spring:
 
   datasource:
     url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://postgres:5432/fiap_auth_service_db}
-#    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/fiap_auth_service_db}
+    #    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/fiap_auth_service_db}
     username: ${SPRING_DATASOURCE_USERNAME:postgres}
     password: ${SPRING_DATASOURCE_PASSWORD:postgres}
     driver-class-name: org.postgresql.Driver
@@ -33,12 +33,24 @@ spring:
         format_sql: true  # Opcional: formata o SQL no log
         use_sql_comments: true  # Opcional: adiciona comentários sobre as consultas
     open-in-view: false  # Desative caso queira evitar problemas de Lazy Initialization
+
 server:
   port: 8081
 
-#logging:
-#  level:
-#    org.springframework: DEBUG
-#    org.hibernate: DEBUG
-#    org.springframework.mail: DEBUG
+#security:
+#  user:
+#    name: admin  # Usuário padrão para autenticação básica
+#    password: admin  # Senha padrão para autenticação básica (substitua em produção)
 
+#  jwt:
+#    issuer: /fiap-auth-service-app/.well-known/openid-configuration
+#    secret: admin123  #> admin # Substitua por sua chave secreta real em Base64
+#    expiration: 3600 # Tempo de expiração do token (em segundos)
+jwt:
+  secret: pkaAJSvAscjFHe/eFbcXfkHZvTw/GgQKnSk7GS9Ug9v8CX6aY6MnyNe5hbprYedic1x3w6OvIV7jkBx9cXd6Tg==
+  expiration: 3600000 # 1 hour
+
+logging:
+  level:
+    root: INFO
+    org.springframework: INFO

@@ -18,14 +18,18 @@ class UserService(
 ) {
 
     fun createUser(request: UserRequest): User {
-        if (userRepository.findByEmail(request.email) != null) {
-            throw UserAlreadyExistsException("E-mail '${request.email}' já está em uso.")
+        val name = requireNotNull(request.name) { "O campo 'name' é obrigatório." }
+        val email = requireNotNull(request.email) { "O campo 'email' é obrigatório." }
+        val password = requireNotNull(request.password) { "O campo 'password' é obrigatório." }
+
+        if (userRepository.findByEmail(email) != null) {
+            throw UserAlreadyExistsException("E-mail '$email' já está em uso.")
         }
 
         val user = User(
-            name = request.name,
-            email = request.email,
-            password = passwordEncoder.encode(request.password)
+            name = name,
+            email = email,
+            password = passwordEncoder.encode(password)
         )
         val savedUser = userRepository.save(user)
 
@@ -33,7 +37,7 @@ class UserService(
         emailNotificationService.sendWelcomeEmail(
             email = savedUser.email,
             name = savedUser.name,
-            password = request.password
+            password = password
         )
 
         return savedUser
@@ -59,10 +63,14 @@ class UserService(
             UserNotFoundException("Usuário com o ID '$id' não encontrado.")
         }
 
+        val name = requireNotNull(request.name) { "O campo 'name' é obrigatório." }
+        val email = requireNotNull(request.email) { "O campo 'email' é obrigatório." }
+        val password = requireNotNull(request.password) { "O campo 'password' é obrigatório." }
+
         val updatedUser = existingUser.copy(
-            name = request.name,
-            email = request.email,
-            password = passwordEncoder.encode(request.password)
+            name = name,
+            email = email,
+            password = passwordEncoder.encode(password)
         )
         return userRepository.save(updatedUser)
     }

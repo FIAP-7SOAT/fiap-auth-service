@@ -1,0 +1,215 @@
+{
+	"info": {
+		"_postman_id": "0dadf4b6-0393-4cf4-8439-b6ce815920fa",
+		"name": "1 - Fiap Auth Service API Collection",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "4092831"
+	},
+	"item": [
+		{
+			"name": "Login - Get JWT Token",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"email\": \"{{email}}\", \"password\": \"{{password}}\"}"
+				},
+				"url": {
+					"raw": "{{baseUrl}}/auth/login",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"auth",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create User",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer {{jwtToken}}",
+						"description": "Token de autenticação"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\": \"Gerald 2\",\n    \"email\": \"admin2@fiap.com\", \n    \"password\": \"admin\"\n}"
+				},
+				"url": {
+					"raw": "{{baseUrl}}/users",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"users"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get User by ID",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{jwtToken}}",
+						"description": "Token de autenticação"
+					}
+				],
+				"url": {
+					"raw": "{{baseUrl}}/users/979230e1-7e62-4e0b-a939-2c2c987e88a1",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"users",
+						"979230e1-7e62-4e0b-a939-2c2c987e88a1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get All Users",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{jwtToken}}",
+						"description": "Token de autenticação"
+					}
+				],
+				"url": {
+					"raw": "{{baseUrl}}/users",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"users"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update User",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer {{jwtToken}}",
+						"description": "Token de autenticação"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\": \"Gerald 23\",\n    \"email\": \"admin@fiap.com\"\n}"
+				},
+				"url": {
+					"raw": "{{baseUrl}}/users/{{userId}}",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"users",
+						"{{userId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete User",
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{jwtToken}}",
+						"description": "Token de autenticação"
+					}
+				],
+				"url": {
+					"raw": "{{baseUrl}}/users/{{userId}}",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"users",
+						"{{userId}}"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:8081"
+		},
+		{
+			"key": "jwtToken",
+			"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbkBmaWFwLmNvbSIsInVzZXJJZCI6Ijk3OTIzMGUxLTdlNjItNGUwYi1hOTM5LTJjMmM5ODdlODhhMSIsInJvbGVzIjpbIlVTRVIiXSwiaWF0IjoxNzM4ODk0OTQxLCJleHAiOjE3Mzg4OTg1NDF9.qhyFRNEZFkobCT6wjKf_JZJvGR0LpMYRJ3ybE0HCN1cBzSwExgZfE0qptLdC8QSU7wWqT8Krp2JEHZV6Hx3Drw"
+		},
+		{
+			"key": "email",
+			"value": "admin@fiap.com"
+		},
+		{
+			"key": "password",
+			"value": "admin"
+		},
+		{
+			"key": "userId",
+			"value": "979230e1-7e62-4e0b-a939-2c2c987e88a1"
+		}
+	]
+}
