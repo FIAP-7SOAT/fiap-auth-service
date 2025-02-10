@@ -78,10 +78,10 @@ O fluxo de autenticação no `fiap-auth-service` é simples e eficaz, sendo base
 
 Abaixo estão os links para os README que detalham os requisitos, configuração de infraestrutura e outros aspectos importantes do projeto:
 
-- [database.md](./database.md): Informações detalhadas sobre a configuração do banco de dados, incluindo como configurar o PostgreSQL para a aplicação.
-- [docker.md](./docker.md): Guia de como criar e configurar os containers Docker para o serviço e banco de dados.
-- [kubernetes.md](./kubernetes.md): Documentação sobre a configuração do Kubernetes, incluindo comandos `kubectl` para gerenciamento dos serviços em clusters.
-- [requirements.md](./requirements.md): Detalhes sobre os pré-requisitos necessários para rodar o serviço, incluindo requisitos de software e hardware.
+- [database.md](./docs/database.md): Informações detalhadas sobre a configuração do banco de dados, incluindo como configurar o PostgreSQL para a aplicação.
+- [docker.md](./docs/docker.md): Guia de como criar e configurar os containers Docker para o serviço e banco de dados.
+- [kubernetes.md](./docs/kubernetes.md): Documentação sobre a configuração do Kubernetes, incluindo comandos `kubectl` para gerenciamento dos serviços em clusters.
+- [requirements.md](./docs/requirements.md): Detalhes sobre os pré-requisitos necessários para rodar o serviço, incluindo requisitos de software e hardware.
 
 ## Como Usar
 
